@@ -1,0 +1,11 @@
+Use dockerdb;
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users
+(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(60) NOT NULL
+);

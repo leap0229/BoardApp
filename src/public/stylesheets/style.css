@@ -1,0 +1,82 @@
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 5vw;
+}
+main > #conatiner {
+  max-width: 100%;
+}
+
+a {
+  color: white;
+}
+
+/* https://kuroeveryday.blogspot.com/2019/03/dropdown-men-without-javascript-using-details-element.html */
+header {
+  background-color: black;
+  color: white;
+  height: 50px;
+  padding: 5px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav-menu {
+  margin: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu > .item {
+  margin-left: 2rem;
+}
+
+.dropdown-menu {
+  position: relative;
+}
+
+/* ドロップダウンメニュー */
+.dropdown-menu > .dropdown-items {
+  position: absolute;
+  top: 40px;
+  right: 0;
+
+  width: 100px;
+  padding: 10px;
+  border-radius: 4px;
+
+  background-color: gray;
+  box-shadow: 0 0 3px rgba(0, 0, 0, .7);
+}
+/* メニューにつける▲ */
+.dropdown-menu > .dropdown-items::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 30px;
+  border-bottom: 5px solid white;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+}
+
+/* ナビゲーションに表示するタイトル */
+.dropdown-menu > .dropdown-title {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  /* デフォルトの▼を消す */
+  list-style: none;
+}
+/* デフォルトの▼を消す:Chrome用 */
+.dropdown-menu > .dropdown-title::-webkit-details-marker {
+  display: none;
+}
+/* カスタムの▼ */
+#dropdown {
+  margin-left: 10px;
+  font-size: 5px;
+}

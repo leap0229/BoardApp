@@ -1,0 +1,35 @@
+version: '3'
+services: 
+    mysql:
+        image: mysql:5.7
+        container_name: db_mysql
+        env_file: ./mysql/mysql.env
+        environment: 
+            - TZ=Asia/Tokyo
+        ports: 
+            - '3306:3306'
+        volumes: 
+            - ./mysql/conf:/etc/mysql/conf.d:ro
+            - mysqldata:/var/lib/mysql
+            - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+        networks: 
+            - default
+    app:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        tty: true
+        env_file: 
+            - ./src/env/app.env
+            - ./src/env/db.env
+        ports: 
+            - '3000:3000'
+        volumes: 
+            - ./src:/app
+            - /app/node_modules
+        networks: 
+            - default
+        depends_on: 
+            - mysql
+volumes: 
+    mysqldata:
