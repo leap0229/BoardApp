@@ -3,11 +3,12 @@ const cryptHelper = require('../common/cryptHelper');
 const { DuplicateUserError } = require('../common/customException');
 
 const insertsUser = 'INSERT INTO users(email, username, password) VALUES (?, ?, ?)';
-const selectOneUser = 'SELECT username, password FROM users WHERE email = ? LIMIT 1';
-const selectUsernameOneUser = 'SELECT username FROM users WHERE email = ? LIMIT 1';
+const selectOneUserByEmail = 'SELECT id, username, password FROM users WHERE email = ? LIMIT 1';
+const selectOneUserById = 'SELECT email, username FROM users WHERE id = ? LIMIT 1';
 
 class User {
-  constructor({ email, username, rawPassword }) {
+  constructor({ id, email, username, rawPassword }) {
+    this.id = id;
     this.email = email;
     this.username = username;
     this.password = rawPassword;
@@ -18,7 +19,7 @@ module.exports = {
   createUser: async (email, username, rawPassword) => {
     const password = await cryptHelper.genHash(rawPassword);
 
-    const _ = await connection.execute(insertsUser, [
+    const [result, _] = await connection.execute(insertsUser, [
       email, username, password
     ]).catch((err) => {
       if (err.code === 'ER_DUP_ENTRY') {
@@ -28,11 +29,12 @@ module.exports = {
       throw err;
     });
 
-    return new User({ email, username, rawPassword });
+    const id = result.insertId;
+    return new User({ id, email, username, rawPassword });
   },
 
   getValidUser: async (email, rawPassword) => {
-    const [result, _] = await connection.execute(selectOneUser, [
+    const [result, _] = await connection.execute(selectOneUserByEmail, [
       email
     ]).catch((err) => {
       throw err;
@@ -49,13 +51,14 @@ module.exports = {
       return;
     }
 
+    const id = result[0].id;
     const username = result[0].username;
-    return new User({ email, username, rawPassword });
+    return new User({ id, email, username, rawPassword });
   },
 
-  getUser: async (email) => {
-    const [result, _] = await connection.execute(selectUsernameOneUser, [
-      email
+  getUser: async (id) => {
+    const [result, _] = await connection.execute(selectOneUserById, [
+      id
     ]).catch((err) => {
       throw err;
     });
@@ -64,7 +67,8 @@ module.exports = {
       return;
     }
 
+    const email = result[0].email;
     const username = result[0].username;
-    return new User({ email, username, rawPassword: null });
+    return new User({ id, email, username, rawPassword: null });
   }
 };

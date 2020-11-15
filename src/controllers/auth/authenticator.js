@@ -43,8 +43,8 @@ passport.use(new JwtStrategy(
         audience: process.env.AUDIENCE
     },
     async (jwtPayload, done) => {
-        const email = jwtPayload.email;
-        const validUser = await Users.getUser(email)
+        const id = jwtPayload.id;
+        const validUser = await Users.getUser(id)
             .catch((err) => {
                 return done(err, false);
             });

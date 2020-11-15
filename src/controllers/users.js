@@ -40,9 +40,9 @@ module.exports = {
             });
 
         // await-catchでcatchされるとnewuserにfalsyな値が返るので、ここでリターン
-        if (!newUser) { return; }
+        if (!newUser) return;
 
-        res.cookie('jwt', genJWT({ email: newUser.email }), {
+        res.cookie('jwt', genJWT({ id: newUser.id }), {
             httpOnly: true,
             //secure: true // httpsの場合のみ有効にする。本番時
         });
@@ -62,7 +62,7 @@ module.exports = {
             });
         }
 
-        res.cookie('jwt', genJWT({ email: user.email }), {
+        res.cookie('jwt', genJWT({ id: user.id }), {
             httpOnly: true,
             //secure: true // httpsの場合のみ有効にする。本番時
         });
