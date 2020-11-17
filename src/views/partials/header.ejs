@@ -1,0 +1,28 @@
+<head>
+    <title>Login App</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <header>
+        <nav>
+            <ul class="nav-menu">
+                <li class="item"><a href="/posts">みんなの投稿</a></li>
+                <li class="item"><a href="/posts/post">投稿する</a></li>
+                <% if (locals.authenticated) { %>
+                <li class="item">
+                    <details class="dropdown-menu">
+                        <summary class="dropdown-title">
+                            <span><%= username%>▼</span>
+                        </summary>
+                        <ul class="dropdown-items">
+                            <li><a href="/users/signout">サインアウト</a></li>
+                        </ul>
+                    </details>
+                </li>
+                <% } else { %>
+                <li class="item"><a href="/users/signin">サインイン</a></li>
+                <li class="item"><a href="/users/signup">サインアップ</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </header>
+</head>

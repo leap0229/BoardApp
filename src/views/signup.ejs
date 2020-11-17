@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/header'); %>
+
+<body>
+  <main>
+    <div id="conatiner">
+      <h1>Signup</h1>
+      <form action="/users/signup" method="POST">
+        <p>
+          Name<input type="text" name="username" <% if (locals.username) { %>value=<%= username%><% } %>>
+          <% if (locals.errorMessages && errorMessages['username']) { %>
+          <label><%= errorMessages['username'] %></label>
+          <% } %>
+        </p>
+        <p>
+          E-Mail Address<input type="email" name="email" <% if (locals.email) { %>value=<%= email%><% } %>>
+          <% if (locals.errorMessages && errorMessages['email']) { %>
+          <label><%= errorMessages['email'] %></label>
+          <% } %>
+        </p>
+        <p>
+          Password<input type="password" name="password">
+          <% if (locals.errorMessages && errorMessages['password']) { %>
+          <label><%= errorMessages['password'] %></label>
+          <% } %>
+        </p>
+        <p>
+          Confirm Password<input type="password" name="confirmPassword">
+          <% if (locals.errorMessages && errorMessages['confirmPassword']) { %>
+          <label><%= errorMessages['confirmPassword'] %></label>
+          <% } %>
+        </p>
+        <input type="submit" value="Signup">
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>
