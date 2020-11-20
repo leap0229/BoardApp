@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/header'); %>
+
+<body>
+  <main>
+    <div id="conatiner">
+      <% if (locals.posts && posts.length !== 0) { %>
+      <div id="post-list">
+        <% posts.forEach((post) => { %>
+        <div class="post">
+          <div>
+            <strong><%=post.title %></strong>
+          </div>
+          <div>
+            <%=post.content %>
+          </div>
+          <div>
+            投稿者:<%=post.username %>
+          </div>
+          <% if (post.isOwn) { %>
+          <tr>
+            <td>
+              <a href="posts/<%=post.id %>/edit" class="update-button">編集</a>
+            </td>
+            <td>
+              <a href="posts/<%=post.id %>/delete" class="delete-button">削除</a>
+            </td>
+          </tr>
+          <% } %>
+        </div>
+        <% }); %>
+      </div>
+      <% }; %>
+    </div>
+  </main>
+</body>
+
+</html>

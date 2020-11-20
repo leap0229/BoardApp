@@ -6,8 +6,8 @@
         <nav>
             <ul class="nav-menu">
                 <li class="item"><a href="/posts">みんなの投稿</a></li>
-                <li class="item"><a href="/posts/post">投稿する</a></li>
-                <% if (locals.authenticated) { %>
+                <li class="item"><a href="/posts/new">投稿する</a></li>
+                <% if (locals.username) { %>
                 <li class="item">
                     <details class="dropdown-menu">
                         <summary class="dropdown-title">

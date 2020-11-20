@@ -1,10 +1,10 @@
 const { check, validationResult } = require('express-validator');
-const { createParamToError } = require('../common/common');
+const { createParamToError } = require('../../common/common');
 
 module.exports = {
   validate: [
     check('email').notEmpty().withMessage('必須項目です')
-      .trim().isEmail().bail().normalizeEmail().withMessage('メールアドレスを入力してください'),
+      .bail().trim().isEmail().bail().normalizeEmail().withMessage('メールアドレスを入力してください'),
     check('password')
       .notEmpty().withMessage('必須項目です'),
 

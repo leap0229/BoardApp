@@ -1,6 +1,6 @@
 const Users = require('../models/users');
-const userSignupValidator = require('./validator/userSignupValidator');
-const userSigninValidator = require('./validator/userSigninValidator');
+const userSignupValidator = require('./validator/users/userSignupValidator');
+const userSigninValidator = require('./validator/users/userSigninValidator');
 const { createParamToError } = require('./common/common');
 const { DuplicateUserError } = require('../common/customException');
 const { genJWT } = require('../common/authenticateHelper');
@@ -47,7 +47,7 @@ module.exports = {
             //secure: true // httpsの場合のみ有効にする。本番時
         });
 
-        res.render('post', { username: newUser.username, authenticated: true });
+        res.redirect('../posts');
     },
 
     // ユーザログイン時メソッド
@@ -67,7 +67,7 @@ module.exports = {
             //secure: true // httpsの場合のみ有効にする。本番時
         });
 
-        res.render('post', { username: user.username, authenticated: true });
+        res.redirect('../posts');
     },
 
     signoutUser: async (req, res) => {
@@ -76,12 +76,12 @@ module.exports = {
             //secure: true // httpsの場合のみ有効にする。本番時
         });
 
-        res.render('signin');
+        res.redirect('signin');
     },
 
     viewSignupUserPage: async (req, res) => {
         if (req.user) {
-            return res.render('post', { username: req.user.username, authenticated: true });
+            return res.redirect('../posts');
         }
 
         res.render('signup');
@@ -89,7 +89,7 @@ module.exports = {
 
     viewSigninUserPage: async (req, res) => {
         if (req.user) {
-            return res.render('post', { username: req.user.username, authenticated: true });
+            return res.redirect('../posts');
         }
 
         res.render('signin');

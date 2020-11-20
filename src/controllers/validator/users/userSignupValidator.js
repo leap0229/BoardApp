@@ -1,5 +1,5 @@
 const { check, validationResult } = require('express-validator');
-const { createParamToError } = require('../common/common');
+const { createParamToError } = require('../../common/common');
 
 const validatePasswordConfirmation = (confirmPassword, { req }) => {
   const password = req.body.password;
@@ -17,10 +17,10 @@ module.exports = {
   validate: [
     check('username').notEmpty().withMessage('必須項目です'),
     check('email').notEmpty().withMessage('必須項目です')
-      .trim().isEmail().bail().normalizeEmail().withMessage('メールアドレスを入力してください'),
+      .bail().trim().isEmail().bail().normalizeEmail().withMessage('メールアドレスを入力してください'),
     check('password')
       .notEmpty().withMessage('必須項目です')
-      .isLength({ min: minimumPasswordLength }).withMessage(`${minimumPasswordLength}文字以上で入力してください`),
+      .bail().isLength({ min: minimumPasswordLength }).withMessage(`${minimumPasswordLength}文字以上で入力してください`),
     check('confirmPassword')
       .notEmpty().withMessage('必須項目です')
       .bail().custom(validatePasswordConfirmation),

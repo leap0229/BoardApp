@@ -2,7 +2,7 @@ const connection = require('../db/connection');
 const cryptHelper = require('../common/cryptHelper');
 const { DuplicateUserError } = require('../common/customException');
 
-const insertsUser = 'INSERT INTO users(email, username, password) VALUES (?, ?, ?)';
+const insertUser = 'INSERT INTO users(email, username, password) VALUES (?, ?, ?)';
 const selectOneUserByEmail = 'SELECT id, username, password FROM users WHERE email = ? LIMIT 1';
 const selectOneUserById = 'SELECT email, username FROM users WHERE id = ? LIMIT 1';
 
@@ -19,7 +19,7 @@ module.exports = {
   createUser: async (email, username, rawPassword) => {
     const password = await cryptHelper.genHash(rawPassword);
 
-    const [result, _] = await connection.execute(insertsUser, [
+    const [result, _] = await connection.execute(insertUser, [
       email, username, password
     ]).catch((err) => {
       if (err.code === 'ER_DUP_ENTRY') {
