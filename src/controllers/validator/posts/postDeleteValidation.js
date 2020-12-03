@@ -8,7 +8,7 @@ module.exports = {
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.redirect(req.baseUrl);
+        return res.redirect(303, req.baseUrl);
       }
 
       next();

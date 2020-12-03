@@ -11,8 +11,7 @@ module.exports = {
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.render('signin', {
-          username: req.body.username,
+        return res.status(400).render('signin', {
           email: req.body.email,
           errorMessages: createParamToError(errors.errors),
         });

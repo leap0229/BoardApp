@@ -15,7 +15,7 @@ module.exports = {
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.render('editPost', {
+        return res.status(400).render('editPost', {
           title: req.body.title,
           content: req.body.content,
           id: req.params.id,

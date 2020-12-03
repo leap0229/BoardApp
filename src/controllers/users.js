@@ -13,30 +13,31 @@ module.exports = {
     validateSigninUser: userSigninValidator.validate,
 
     // ユーザ登録メソッド
-    signupUser: async (req, res) => {
-        const { email, username, password } = req.body;
+    signupUser: async (req, res, next) => {
+        const { email, inputUsername, password } = req.body;
 
-        const newUser = await Users.createUser(email, username, password)
+        const newUser = await Users.createUser(email, inputUsername, password)
             .catch((err) => {
-                if (err instanceof DuplicateUserError) {
-                    res.render('signup', {
-                        username, email,
-                        errorMessages: createParamToError([
-                            { msg: '既に登録されています', param: 'email' },
-                        ]),
-                    });
+                const error = {
+                    err,
+                    renderPage: 'signup',
+                    params: { inputUsername, email }
+                };
 
-                    return;
+                if (err instanceof DuplicateUserError) {
+                    error['status'] = 400;
+                    error['errorMessages'] = [
+                            { msg: '既に登録されています', param: 'email' },
+                        ];
+    
+                    return next(error);
                 }
 
-                res.render('signup', {
-                    username, email,
-                    errorMessages: createParamToError([
-                        { msg: '登録に失敗しました', param: 'username' },
-                    ]),
-                });
+                error['errorMessages'] = [
+                    { msg: '登録に失敗しました', param: 'username' },
+                ];
 
-                return;
+                return next(error);
             });
 
         // await-catchでcatchされるとnewuserにfalsyな値が返るので、ここでリターン
@@ -47,14 +48,14 @@ module.exports = {
             //secure: true // httpsの場合のみ有効にする。本番時
         });
 
-        res.redirect('../posts');
+        res.redirect(303, '../posts');
     },
 
     // ユーザログイン時メソッド
-    signinUser: async (req, res) => {
+    signinUser: async (req, res, next) => {
         const user = req.user;
         if (!user) {
-            return res.render('signin', {
+            return res.status(401).render('signin', {
                 email: req.body.email,
                 errorMessages: createParamToError([
                     { msg: 'ログインに失敗しました', param: 'email' },
@@ -67,7 +68,7 @@ module.exports = {
             //secure: true // httpsの場合のみ有効にする。本番時
         });
 
-        res.redirect('../posts');
+        res.redirect(303, '../posts');
     },
 
     signoutUser: async (req, res) => {
@@ -76,12 +77,12 @@ module.exports = {
             //secure: true // httpsの場合のみ有効にする。本番時
         });
 
-        res.redirect('signin');
+        res.redirect(303, 'signin');
     },
 
     viewSignupUserPage: async (req, res) => {
         if (req.user) {
-            return res.redirect('../posts');
+            return res.redirect(303, '../posts');
         }
 
         res.render('signup');
@@ -89,7 +90,7 @@ module.exports = {
 
     viewSigninUserPage: async (req, res) => {
         if (req.user) {
-            return res.redirect('../posts');
+            return res.redirect(303, '../posts');
         }
 
         res.render('signin');

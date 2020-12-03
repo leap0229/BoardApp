@@ -9,9 +9,9 @@
         <h1>Signup</h1>
         <form action="/users/signup" method="POST">
           <p>
-            Name<input type="text" name="username" <% if (locals.username) { %>value=<%= username%><% } %>>
-            <% if (locals.errorMessages && errorMessages['username']) { %>
-            <label><%= errorMessages['username'] %></label>
+            Name<input type="text" name="inputUsername" <% if (locals.inputUsername) { %>value=<%= inputUsername%><% } %>>
+            <% if (locals.errorMessages && errorMessages['inputUsername']) { %>
+            <label><%= errorMessages['inputUsername'] %></label>
             <% } %>
           </p>
           <p>

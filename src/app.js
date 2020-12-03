@@ -23,4 +23,8 @@ const postsRouter = require('./routes/posts');
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 
+const { logErrors, errorHandler } = require('./controllers/middlewares/errorHandler');
+app.use(logErrors);
+app.use(errorHandler);
+
 module.exports = app;
