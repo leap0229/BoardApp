@@ -23,7 +23,7 @@ passport.use(new LocalStrategy(
         if (!validUser) {
             return done(null, false);
         }
-        
+
         return done(null, validUser);
     }
 ));
@@ -48,7 +48,7 @@ passport.use(new JwtStrategy(
             .catch((err) => {
                 return done(err, false);
             });
-        
+
         return done(null, validUser);
     }
 ));
@@ -71,9 +71,18 @@ module.exports = {
                     //secure: true // httpsの場合のみ有効にする。本番時
                 });
 
-                return res.render('signin');
+                const error = {
+                    err,
+                    renderPage: 'signin',
+                    status: 401,
+                    errorMessages: [
+                        { msg: 'ログインしてください', param: 'email' }
+                    ]
+                };
+
+                return next(error);
             }
-            
+
             req.user = user;
             next();
         })(req, res, next);

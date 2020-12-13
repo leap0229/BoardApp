@@ -5,22 +5,24 @@
 <body>
   <main>
     <div id="conatiner">
-      <h1>Signin</h1>
-      <form action="/users/signin" method="POST">
-        <p>
-          E-Mail Address<input type="email" name="email" <% if (locals.email) { %>value=<%= email%><% } %>>
-          <% if (locals.errorMessages && errorMessages['email']) { %>
-          <label><%= errorMessages['email'] %></label>
-          <% } %>
-        </p>
-        <p>
-          Password<input type="password" name="password">
-          <% if (locals.errorMessages && errorMessages['password']) { %>
-          <label><%= errorMessages['password'] %></label>
-          <% } %>
-        </p>
-        <input type="submit" value="Signin">
-      </form>
+      <div id="signin-form">
+        <h1>Signin</h1>
+        <form action="/users/signin" method="POST">
+          <p>
+            E-Mail Address<input type="email" name="email" <% if (locals.email) { %>value=<%= email%><% } %>>
+            <% if (locals.errorMessages && errorMessages['email']) { %>
+            <label><%= errorMessages['email'] %></label>
+            <% } %>
+          </p>
+          <p>
+            Password<input type="password" name="password">
+            <% if (locals.errorMessages && errorMessages['password']) { %>
+            <label><%= errorMessages['password'] %></label>
+            <% } %>
+          </p>
+          <input type="submit" value="Signin">
+        </form>
+      </div>
     </div>
   </main>
 </body>
