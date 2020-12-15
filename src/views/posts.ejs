@@ -18,6 +18,14 @@
           <div>
             投稿者:<%=post.username %>
           </div>
+          <div>
+            <% if (post.haveOwnGood) { %>
+            <i class="fas fa-heart" id="good-<%= post.id %>" onclick="goodAction(<%= post.id %>)"></i>
+            <% } else { %>
+            <i class="far fa-heart" id="good-<%= post.id %>" onclick="goodAction(<%= post.id %>)"></i>
+            <% } %>
+            <label id="goodCount-<%= post.id %>"><%= post.goodCount %></label>
+          </div>
           <% if (post.isOwn) { %>
           <tr>
             <td>
@@ -34,6 +42,28 @@
       <% }; %>
     </div>
   </main>
+
+  <script>
+    const goodAction = async (postId) => {
+      const goodButton = document.getElementById(`good-${postId}`);
+      const haveOwnGood = goodButton.classList.contains('fas');
+
+      const response = await fetch('goods', {
+        method: haveOwnGood ? 'DELETE' : 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ postId })
+      });
+      const responseBody = await response.json();
+
+      const goodCountLabel = document.getElementById(`goodCount-${postId}`);
+      goodCountLabel.textContent = responseBody.goodCount;
+
+      const goodButtonClass = haveOwnGood ? 'far' : 'fas';
+      goodButton.className = `${goodButtonClass} fa-heart`;
+    };
+  </script>
 </body>
 
 </html>

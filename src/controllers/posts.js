@@ -1,7 +1,39 @@
 const Posts = require('../models/posts');
 const Users = require('../models/users');
+const Goods = require('../models/goods');
 const postCreateValidator = require('./validator/posts/postCreateValidator');
 const postEditValidator = require('./validator/posts/postEditValidator');
+
+const getUserInfo = async (post, userId) => {
+    const userIdOfPost = post.userId;
+    const user = await Users.getUser(userIdOfPost)
+        .catch((err) => {
+            return;
+        });
+
+    if (!user) {
+        return;
+    }
+
+    post.username = user.username;
+    post.isOwn = (userIdOfPost === userId);
+};
+
+const getGoodInfo = async (post, loginUserId) => {
+    const goods = await Goods.getGoods(post.id)
+        .catch((err) => {
+            return;
+        });
+
+    if (!goods) {
+        return;
+    }
+
+    post.goodCount = goods.length;
+
+    const haveOwnGood = goods.find(good => good.userId === loginUserId);
+    post.haveOwnGood = !!haveOwnGood;
+};
 
 const getAllPostsWithUserInfo = async (userId) => {
     const posts = await Posts.getPosts()
@@ -16,18 +48,11 @@ const getAllPostsWithUserInfo = async (userId) => {
     // dbから更新時間の昇順で取得している。
     // それを維持したままusernameを取得するための実装
     await Promise.all(posts.map(async (post) => {
-        const userIdOfPost = post.userId;
-        const user = await Users.getUser(userIdOfPost)
-            .catch((err) => {
-                return;
-            });
+        const getUserPromise = getUserInfo(post, userId);
+        const getGoodsPromise = getGoodInfo(post, userId);
 
-        if (!user) {
-            return;
-        }
+        await Promise.all([getUserPromise, getGoodsPromise]);
 
-        post.username = user.username;
-        post.isOwn = (userIdOfPost === userId);
         return;
     }));
 
@@ -63,7 +88,7 @@ module.exports = {
         }
 
         res.render('editPost', {
-            title: post.title, 
+            title: post.title,
             content: post.content,
             username: req.user.username,
             id
@@ -137,7 +162,7 @@ module.exports = {
             });
 
         if (!updatedPost) return;
-        
+
         res.redirect(303, req.baseUrl);
     },
 

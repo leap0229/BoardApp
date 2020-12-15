@@ -2,6 +2,10 @@ module.exports = {
     createParamToError: (errors) => {
         const paramToError = {};
 
+        if (!errors) {
+            return;
+        }
+        
         errors.forEach((error) => {
             const errorMessage = error.msg;
             const param = error.param;

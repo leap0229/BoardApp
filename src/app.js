@@ -19,9 +19,11 @@ app.use(cookieParser());
 // routerの設定
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
+const goodsRouter = require('./routes/goods');
 
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+app.use('/goods', goodsRouter);
 
 const { logErrors, errorHandler } = require('./controllers/middlewares/errorHandler');
 app.use(logErrors);

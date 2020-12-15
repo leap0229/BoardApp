@@ -54,14 +54,6 @@ module.exports = {
     // ユーザログイン時メソッド
     signinUser: async (req, res, next) => {
         const user = req.user;
-        if (!user) {
-            return res.status(401).render('signin', {
-                email: req.body.email,
-                errorMessages: createParamToError([
-                    { msg: 'ログインに失敗しました', param: 'email' },
-                ])
-            });
-        }
 
         res.cookie('jwt', genJWT({ id: user.id }), {
             httpOnly: true,
