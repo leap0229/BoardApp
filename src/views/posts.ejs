@@ -2,68 +2,109 @@
 <html>
 <%- include('partials/header'); %>
 
-<body>
-  <main>
-    <div id="conatiner">
-      <% if (locals.posts && posts.length !== 0) { %>
-      <div id="post-list">
-        <% posts.forEach((post) => { %>
-        <div class="post">
-          <div>
-            <strong><%=post.title %></strong>
+  <body>
+    <main>
+      <div id="conatiner">
+        <% if (locals.posts && posts.length !==0) { %>
+          <div id="post-list">
+            <label id="error-message"></label>
+            <% posts.forEach((post)=> { %>
+              <div class="post">
+                <div>
+                  <strong>
+                    <%=post.title %>
+                  </strong>
+                </div>
+                <div>
+                  <%=post.content %>
+                </div>
+                <div>
+                  投稿者:<%=post.username %>
+                </div>
+                <div>
+                  <% if (post.haveOwnGood) { %>
+                    <i class="fas fa-heart" id="good-<%= post.id %>" onclick="goodAction(<%= post.id %>)"></i>
+                  <% } else { %>
+                    <i class="far fa-heart" id="good-<%= post.id %>" onclick="goodAction(<%= post.id %>)"></i>
+                  <% } %>
+                  <label id="goodCount-<%= post.id %>">
+                    <%= post.goodCount %>
+                  </label>
+                </div>
+                <% if (post.isOwn) { %>
+                  <tr>
+                    <td>
+                      <a href="posts/<%=post.id %>/edit" class="update-button">編集</a>
+                    </td>
+                    <td>
+                      <a href="posts/<%=post.id %>/delete" class="delete-button">削除</a>
+                    </td>
+                  </tr>
+                  <% } %>
+              </div>
+              <% }); %>
           </div>
-          <div>
-            <%=post.content %>
-          </div>
-          <div>
-            投稿者:<%=post.username %>
-          </div>
-          <div>
-            <% if (post.haveOwnGood) { %>
-            <i class="fas fa-heart" id="good-<%= post.id %>" onclick="goodAction(<%= post.id %>)"></i>
-            <% } else { %>
-            <i class="far fa-heart" id="good-<%= post.id %>" onclick="goodAction(<%= post.id %>)"></i>
-            <% } %>
-            <label id="goodCount-<%= post.id %>"><%= post.goodCount %></label>
-          </div>
-          <% if (post.isOwn) { %>
-          <tr>
-            <td>
-              <a href="posts/<%=post.id %>/edit" class="update-button">編集</a>
-            </td>
-            <td>
-              <a href="posts/<%=post.id %>/delete" class="delete-button">削除</a>
-            </td>
-          </tr>
-          <% } %>
-        </div>
-        <% }); %>
+          <% }; %>
       </div>
-      <% }; %>
-    </div>
-  </main>
+    </main>
 
-  <script>
-    const goodAction = async (postId) => {
-      const goodButton = document.getElementById(`good-${postId}`);
-      const haveOwnGood = goodButton.classList.contains('fas');
+    <script>
+      const goodAction = async (postId) => {
+        const errorMessageLabel = document.getElementById('error-message');
+        errorMessageLabel.textContent = '';
 
-      const response = await fetch('goods', {
-        method: haveOwnGood ? 'DELETE' : 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ postId })
-      });
-      const responseBody = await response.json();
+        const goodButton = document.getElementById(`good-${postId}`);
+        const haveOwnGood = goodButton.classList.contains('fas');
 
-      const goodCountLabel = document.getElementById(`goodCount-${postId}`);
-      goodCountLabel.textContent = responseBody.goodCount;
+        const response = await fetch('goods', {
+          method: haveOwnGood ? 'DELETE' : 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ postId })
+        });
+        const { success } = await response.json();
 
-      const goodButtonClass = haveOwnGood ? 'far' : 'fas';
-      goodButton.className = `${goodButtonClass} fa-heart`;
-    };
-  </script>
-</body>
+        if (success) {
+          const goodButtonClass = haveOwnGood ? 'far' : 'fas';
+          goodButton.className = `${goodButtonClass} fa-heart`;
+
+          const goodCountLabel = document.getElementById(`goodCount-${postId}`);
+          try {
+            const goodCount = await updateGoodCount(postId);
+            goodCountLabel.textContent = goodCount;
+          } catch (err) {
+            console.error(err);
+
+            const currentGoodCount = parseInt(goodCountLabel.textContent, 10);
+            if (haveOwnGood) {
+              goodCountLabel.textContent = currentGoodCount - 1;
+            } else {
+              goodCountLabel.textContent = currentGoodCount + 1;
+            }
+          }
+
+        } else {
+          errorMessageLabel.textContent = 'いいね!に失敗しました。';
+        }
+      };
+
+      const updateGoodCount = async (postId) => {
+        const response = await fetch(`goods/${postId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const { success, goodCount } = await response.json();
+        if (success) {
+          return goodCount;
+        } else {
+          throw new Error('get goodCount is fail');
+        }
+      };
+    </script
+  </body>
 
 </html>

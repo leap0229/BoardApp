@@ -26,6 +26,7 @@ const getGoodInfo = async (post, loginUserId) => {
         });
 
     if (!goods) {
+        post.goodCount = 0;
         return;
     }
 
