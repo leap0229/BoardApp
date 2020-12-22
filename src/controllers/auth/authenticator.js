@@ -56,6 +56,20 @@ passport.use(new JwtStrategy(
 module.exports = {
     loginAuthenticate: (req, res, next) => {
         passport.authenticate('local', (err, user, info) => {
+            if (err || !user) {
+                const error = {
+                    err,
+                    renderPage: 'signin',
+                    status: 401,
+                    params: { email: req.body.email },
+                    errorMessages: [
+                        { msg: 'ログインに失敗しました', param: 'email' }
+                    ]
+                };
+
+                next(error);
+            }
+
             req.user = user;
             next();
         })(req, res, next);
